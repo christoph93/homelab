@@ -1,0 +1,37 @@
+- name: Prepare environment
+  hosts: all
+  become: yes
+  become_method: su
+  tasks:
+    - name: Install required packages
+      ansible.builtin.package:
+        name:           
+          - sudo
+          - rsync
+          - cifs-utils    
+        state: present      
+        update_cache: true        
+
+    - name: Add user ccalifice to sudoers
+      community.general.sudoers:
+        name: ccalifice
+        state: present
+        user: ccalifice
+        commands: ALL
+        nopassword: false        
+
+    - name: Mount local hdd
+      ansible.posix.mount:
+        src: /dev/sdb
+        path: /mnt/hdd_1tb
+        opts: rw,user,exec 0 1
+        state: mounted
+        fstype: ext4
+
+    - name: Mount system share
+      ansible.posix.mount:
+        src: //192.168.1.65/system
+        path: /mnt/system
+        opts: vers=3,user=system,password=system123,uid=ccalifice,gid=ccalifice 0 0
+        state: mounted
+        fstype: cifs

@@ -1,0 +1,41 @@
+- name: Install docker
+  hosts: all
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Install required packages      
+      ansible.builtin.package:
+        name:           
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg-agent
+          - software-properties-common
+        state: present
+        update_cache: true
+
+    - name: add GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present      
+
+    - name: add docker repository to apt
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+      
+
+    - name: install docker
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: latest
+        update_cache: yes
+
+    - name: check docker is active
+      service:
+        name: docker
+        state: started
+        enabled: yes

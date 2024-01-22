@@ -1,0 +1,28 @@
+- name: Setup backups
+  hosts: arr, services    
+  become_method: doas
+  vars:
+    ansible_become_pass: "malvado6696"
+  tasks:
+
+    - name: Create scripts dir
+      ansible.builtin.file:
+        path: ~/scripts
+        state: directory
+        mode: '0755'
+
+    - name: Copy backup script to home
+      ansible.builtin.copy:
+        src: "files/{{inventory_hostname}}/backup_{{inventory_hostname}}.sh"
+        dest: ~/scripts
+        owner: ccalifice
+        group: ccalifice
+        force: true
+
+    - name: Create backup job at 3am
+      ansible.builtin.cron:
+        name: "backup-job"
+        minute: "0"
+        hour: "3"
+        job: "sh /home/ccalifice/scripts/backup_{{inventory_hostname}}.sh"
+      become: yes

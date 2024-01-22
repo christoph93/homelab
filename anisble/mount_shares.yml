@@ -1,0 +1,83 @@
+- name: mount backup share
+  hosts: arr, services
+  become: yes
+  become_method: doas
+  vars:
+    ansible_become_pass: "malvado6696"
+  tasks:
+    - name: Install required packages
+      ansible.builtin.package:
+        name:
+          - cifs-utils    
+        state: present
+
+    - name: Mount server_backup share
+      ansible.posix.mount:
+        src: //192.168.1.65/server_backup/{{inventory_hostname}}
+        path: /mnt/server_backup
+        opts: vers=3,user=server_backup,password=asdf1234,uid=ccalifice,gid=ccalifice
+        state: mounted
+        fstype: cifs          
+
+    # - name: Mount local hdd
+    #   ansible.posix.mount:
+    #     src: /dev/sdb
+    #     path: /mnt/hdd_1tb
+    #     opts: rw,user,exec 0 1
+    #     state: mounted
+    #     fstype: ext4
+
+
+- name: mount arr shares
+  hosts: arr
+  become: yes
+  become_method: doas
+  vars:
+    ansible_become_pass: "malvado6696"
+  tasks:
+    - name: Mount system share
+      ansible.posix.mount:
+        src: //192.168.1.65/system
+        path: /mnt/system
+        opts: vers=3,user=system,password=system123,uid=ccalifice,gid=ccalifice
+        state: mounted
+        fstype: cifs
+        
+    - name: Mount servarr share
+      ansible.posix.mount:
+        src: //192.168.1.65/servarr
+        path: /mnt/servarr
+        opts: vers=3,user=servarr,password=asdf1234,uid=ccalifice,gid=ccalifice
+        state: mounted
+        fstype: cifs
+
+- name: mount services shares
+  hosts: services
+  become: yes
+  become_method: doas
+  vars:
+    ansible_become_pass: "malvado6696"
+  tasks:
+    - name: Mount photoprism share
+      ansible.posix.mount:
+        src: //192.168.1.65/photoprism
+        path: /mnt/photoprism
+        opts: vers=3,user=photoprism,password=photoprism123,uid=ccalifice,gid=ccalifice
+        state: mounted
+        fstype: cifs
+        
+    - name: Mount filebrowser share
+      ansible.posix.mount:
+        src: //192.168.1.65/filebrowser
+        path: /mnt/filebrowser
+        opts: vers=3,user=filebrowser,password=asdf1234,uid=ccalifice,gid=ccalifice
+        state: mounted
+        fstype: cifs
+
+    - name: Mount christoph share
+      ansible.posix.mount:
+        src: //192.168.1.65/filebrowser
+        path: /mnt/filebrowser
+        opts: vers=3,user=filebrowser,password=asdf1234,uid=ccalifice,gid=ccalifice
+        state: mounted
+        fstype: cifs

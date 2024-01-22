@@ -99,7 +99,7 @@ In Alpine, install ``lsblk`` and get the new disk
 
 Create mount points and give user permissions
 
-    doas mkdir /mnt/hdd_1tb &&
+    doas mkdir /mnt/hdd_1tb && \
     doas chown ccalifice:ccalifice /mnt/hdd_1tb
 
 
